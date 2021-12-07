@@ -5,46 +5,26 @@
 #include "SFML/Window.hpp"
 
 // Global Variables for borders()
-// desktopTemp gets screen resolution of PC running the program
-sf::VideoMode desktopTemp = sf::VideoMode::getDesktopMode();
-const int window_height = desktopTemp.height;
-const int window_width = desktopTemp.width;
+const int window_height = 768;
+const int window_width = 1204;
 
 // =============================================== //
 // ======== Boid Functions from Boid.h =========== //
 // =============================================== //
 
-Boid::Boid(float x, float y): predatorStatus(false)
+Boid::Boid(float x, float y)
 {
-	acceleration = Pvector(0, 0);
-	velocity = Pvector(rand() % 3 - 2, rand() % 3 - 2);
-	location = Pvector(x, y);
-	maxSpeed = 3.5;
+	maxSpeed = 1.0;
 	maxForce = 0.5;
 
-	desSep = 20;
-	desAli = 70;
-	desCoh = 25;
-	SepW = 1.5;
-	AliW = 1.0;
-	CohW = 1.0;
-}
+	velocity = Pvector(rand() % 10 / 10.0, rand() % 10 / 10.0);
 
-Boid::Boid(float x, float y, bool predCheck)
-{
-	predatorStatus = predCheck;
-	if (predCheck == true) {
-		maxSpeed = 7.5;
-		maxForce = 1.5;
-		velocity = Pvector(rand() % 5 - 1, rand() % 5 - 1);
-	}
-	else {
-		maxSpeed = 5.5;
-		maxForce = 0.5;
-		velocity = Pvector(rand() % 5 - 2, rand() % 5 - 2);
-	}
 	acceleration = Pvector(0, 0);
-	location = Pvector(x, y);
+
+	// places boid in a random location in the window
+	location = Pvector((rand() % window_width), (rand() % window_height));
+
+	//location = Pvector(x, y);
 
 	desSep = 20;
 	desAli = 70;
@@ -79,26 +59,6 @@ Pvector Boid::Separation(vector<Boid> boids)
 			diff.normalize();
 			diff.divScalar(d);      // Weight by distance
 			steer.addVector(diff);
-			count++;
-		}
-		// If current boid is a predator and the boid we're looking at is also
-		// a predator, then separate only slightly
-		if ((d > 0) && (d < desSep) && predatorStatus == true
-			&& boids[i].predatorStatus == true) {
-			Pvector pred2pred(0, 0);
-			pred2pred = pred2pred.subTwoVector(location, boids[i].location);
-			pred2pred.normalize();
-			pred2pred.divScalar(d);
-			steer.addVector(pred2pred);
-			count++;
-		}
-		// If current boid is not a predator, but the boid we're looking at is
-		// a predator, then create a large separation Pvector
-		else if ((d > 0) && (d < desiredseparation + 70) && boids[i].predatorStatus == true) {
-			Pvector pred(0, 0);
-			pred = pred.subTwoVector(location, boids[i].location);
-			pred.mulScalar(900);
-			steer.addVector(pred);
 			count++;
 		}
 	}
@@ -160,7 +120,7 @@ Pvector Boid::Cohesion(vector<Boid> Boids)
 	for (int i = 0; i < Boids.size(); i++) {
 		float d = location.distance(Boids[i].location);
 
-		if (Boids[i].predatorStatus) neighbordist = 15;
+		neighbordist = 15;
 
 		if ((d > 0) && (d < neighbordist)) {
 			sum.addVector(Boids[i].location);
@@ -212,7 +172,7 @@ void Boid::update()
 // and corrects boids which are sitting outside of the SFML window
 void Boid::run(vector <Boid> v)
 {
-	flock(v);
+	//flock(v);
 	update();
 	borders();
 }
@@ -237,10 +197,21 @@ void Boid::flock(vector<Boid> v)
 // the other side.
 void Boid::borders()
 {
+	if (location.x < 0 || location.x > window_width) {
+		velocity.x = -velocity.x;
+		acceleration.x = -acceleration.x;
+	}
+	if (location.y < 0 || location.y > window_height) {
+		velocity.y = -velocity.y;
+		acceleration.y = -acceleration.y;
+	}
+
+	/*
 	if (location.x < 0)    location.x += window_width;
 	if (location.y < 0)    location.y += window_height;
 	if (location.x > window_width) location.x -= window_width;
 	if (location.y > window_height) location.y -= window_height;
+	*/
 }
 
 // Calculates the angle for the velocity of a boid which allows the visual

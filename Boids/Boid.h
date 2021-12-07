@@ -29,7 +29,6 @@
 
 class Boid {
 public:
-	bool predatorStatus;
 	Pvector location;
 	Pvector velocity;
 	Pvector acceleration;
@@ -37,7 +36,6 @@ public:
 	float maxForce;
 
 	Boid(float x, float y);
-	Boid(float x, float y, bool predCheck);
 
 	void applyForce(Pvector force);
 

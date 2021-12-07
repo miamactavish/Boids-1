@@ -22,10 +22,9 @@ If you change something in this file and things end up breaking, redownload the 
 Game::Game()
 {
 	//this->boidsSize = rand() % 10 - 3;
-	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-	this->_window_height = desktop.height;
-	this->_window_width = desktop.width;
-	this->_window.create(sf::VideoMode(_window_width, _window_height, desktop.bitsPerPixel), "Boids", sf::Style::None);
+	this->_window_height = 768;
+	this->_window_width = 1204;
+	this->_window.create(sf::VideoMode(_window_width, _window_height), "Boids");
 	printInstructions();
 }
 
@@ -34,7 +33,7 @@ Game::Game()
 void Game::Run()
 {
 	for (int i = 0; i < BOID_AMOUNT; i++) {
-		createBoid(_window_width / 2, _window_height / 2, false, sf::Color::Green, sf::Color::Blue);
+		createBoid(_window_width / 2, _window_height / 2, sf::Color::Green, sf::Color::Blue);
 	}
 
 	sf::Font font;
@@ -45,20 +44,10 @@ void Game::Run()
 	fpsText.setCharacterSize(12);
 	fpsText.setPosition(_window_width - 162, 0);
 
-	sf::Text preyText("Total Prey Count: " + to_string(flock.preyCount()), font);
-	preyText.setFillColor(sf::Color::White);
-	preyText.setCharacterSize(12);
-	preyText.setPosition(_window_width - 155, 12);
-
-	sf::Text predText("Total Predator Count: " + to_string(flock.predCount()), font);
-	predText.setFillColor(sf::Color::White);
-	predText.setCharacterSize(12);
-	predText.setPosition(_window_width - 183, 24);
-
 	sf::Text boidText("Total Boid Count: " + to_string(flock.getSize()), font);
 	boidText.setFillColor(sf::Color::White);
 	boidText.setCharacterSize(12);
-	boidText.setPosition(_window_width - 155, 36);
+	boidText.setPosition(_window_width - 155, 12);
 	
 	sf::Text dSepText("Separation Amount: " + to_string(flock.getBoid(0).getDesSep()), font);
 	dSepText.setFillColor(sf::Color::White);
@@ -98,7 +87,7 @@ void Game::Run()
 		float currentTime = clock.restart().asSeconds();
 		float fps = 1 / currentTime; // 1 / refresh time = estimate of fps
 		HandleInput();
-		Render(fpsText, fps, preyText, predText, boidText, 
+		Render(fpsText, fps, boidText, 
 				dSepText, dAliText, dCohText, dSepWText, dAliWText, dCohWText);
 	}
 }
@@ -123,7 +112,7 @@ void Game::HandleInput()
 		// Event to create new "prey" boids
 		if (event.type == sf::Event::KeyPressed &&
 			event.key.code == sf::Keyboard::Space) {
-			createBoid(rand() % _window_width, rand() % _window_height, false, sf::Color::Green, sf::Color::Blue);
+			createBoid(rand() % _window_width, rand() % _window_height, sf::Color::Green, sf::Color::Blue);
 		}
 
 
@@ -208,19 +197,14 @@ void Game::HandleInput()
 			temp.Run();
 		}
 	}
-
-	// Check for mouse click, draws and adds boid to flock if so.
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-		// Gets mouse coordinates, sets that as the location of the boid and the shape
-		sf::Vector2i mouseCoords = sf::Mouse::getPosition(_window);
-		createBoid(mouseCoords.x, mouseCoords.y, true, sf::Color::Red, sf::Color::Yellow);
-	}
 }
 
-void Game::createBoid(float x, float y, bool predStatus, sf::Color fillColor, sf::Color outlineColor)
+void Game::createBoid(float x, float y, sf::Color fillColor, sf::Color outlineColor)
 {
-	int size = rand() % 10 - 2;
-	Boid b(x, y, predStatus);
+	// Size of each individual boid
+	int size = 5;
+
+	Boid b(x, y);
 	sf::CircleShape shape(size, 3);
 	shape.setPosition(x, y);
 	shape.setFillColor(fillColor);
@@ -248,7 +232,7 @@ void Game::createBoid(float x, float y, bool predStatus, sf::Color fillColor, sf
 }
 
 //Method of passing text needs refactoring
-void Game::Render(sf::Text fpsText, float fps, sf::Text preyText, sf::Text predText, sf::Text boidText, 
+void Game::Render(sf::Text fpsText, float fps, sf::Text boidText, 
 				sf::Text dSepText, sf::Text dAliText, sf::Text dCohText, sf::Text dSepWText, sf::Text dAliWText, sf::Text dCohWText)
 {
 	_window.clear();
@@ -256,12 +240,6 @@ void Game::Render(sf::Text fpsText, float fps, sf::Text preyText, sf::Text predT
 	//Updating and drawing text can possibly be put in it's own function as well
 	fpsText.setString("Frames per Second: " + to_string(int(fps + 0.5)));
 	_window.draw(fpsText);
-
-	preyText.setString("Total Prey Count: " + to_string(flock.preyCount()));
-	_window.draw(preyText);
-
-	predText.setString("Total Predator Count: " + to_string(flock.predCount()));
-	_window.draw(predText);
 
 	boidText.setString("Total Boid Count: " + to_string(flock.getSize()));
 	_window.draw(boidText);

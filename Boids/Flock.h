@@ -24,7 +24,6 @@ public:
 	void flocking();
 
 	//For accessing values and modifying values in Game.cpp
-	int preyCount();
 	int predCount();
 
 	void addDesSep();
