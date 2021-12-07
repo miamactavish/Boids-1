@@ -1,3 +1,16 @@
+/*
+
+---- NOTE FROM MS. MIA: ----
+
+
+The code in this file is used to create the graphics window and draw the boids on the screen. You do NOT need
+to modify, read, or understand this file! But you're free to poke around in it if you'd like. :)
+If you change something in this file and things end up breaking, redownload the code from Schoology!
+
+*/
+
+
+
 #include "Flock.h"
 #include "Game.h"
 #include "SFML/Window.hpp"
@@ -24,62 +37,61 @@ void Game::Run()
 		createBoid(_window_width / 2, _window_height / 2, false, sf::Color::Green, sf::Color::Blue);
 	}
 
-	//Whole block of text can probably simplified in a function as well in order to remove redundancy
 	sf::Font font;
 	font.loadFromFile("consola.ttf");
 
 	sf::Text fpsText("Frames per Second: ", font);
-	fpsText.setColor(sf::Color::White);
+	fpsText.setFillColor(sf::Color::White);
 	fpsText.setCharacterSize(12);
 	fpsText.setPosition(_window_width - 162, 0);
 
 	sf::Text preyText("Total Prey Count: " + to_string(flock.preyCount()), font);
-	preyText.setColor(sf::Color::White);
+	preyText.setFillColor(sf::Color::White);
 	preyText.setCharacterSize(12);
 	preyText.setPosition(_window_width - 155, 12);
 
 	sf::Text predText("Total Predator Count: " + to_string(flock.predCount()), font);
-	predText.setColor(sf::Color::White);
+	predText.setFillColor(sf::Color::White);
 	predText.setCharacterSize(12);
 	predText.setPosition(_window_width - 183, 24);
 
 	sf::Text boidText("Total Boid Count: " + to_string(flock.getSize()), font);
-	boidText.setColor(sf::Color::White);
+	boidText.setFillColor(sf::Color::White);
 	boidText.setCharacterSize(12);
 	boidText.setPosition(_window_width - 155, 36);
 	
 	sf::Text dSepText("Separation Amount: " + to_string(flock.getBoid(0).getDesSep()), font);
-	dSepText.setColor(sf::Color::White);
+	dSepText.setFillColor(sf::Color::White);
 	dSepText.setCharacterSize(12);
 	dSepText.setPosition(_window_width - 162, 60);
 
 	sf::Text dAliText("Alignment Amount: " + to_string(flock.getBoid(0).getDesAli()), font);
-	dAliText.setColor(sf::Color::White);
+	dAliText.setFillColor(sf::Color::White);
 	dAliText.setCharacterSize(12);
 	dAliText.setPosition(_window_width - 155, 72);
 
 	sf::Text dCohText("Cohesion Amount: " + to_string(flock.getBoid(0).getDesCoh()), font);
-	dCohText.setColor(sf::Color::White);
+	dCohText.setFillColor(sf::Color::White);
 	dCohText.setCharacterSize(12);
 	dCohText.setPosition(_window_width - 148, 84);
 
 	sf::Text dSepWText("Separation Weight: " + to_string(flock.getBoid(0).getSepW()), font);
-	dSepWText.setColor(sf::Color::White);
+	dSepWText.setFillColor(sf::Color::White);
 	dSepWText.setCharacterSize(12);
 	dSepWText.setPosition(_window_width - 162, 108);
 
 	sf::Text dAliWText("Alignment Weight: " + to_string(flock.getBoid(0).getAliW()), font);
-	dAliWText.setColor(sf::Color::White);
+	dAliWText.setFillColor(sf::Color::White);
 	dAliWText.setCharacterSize(12);
 	dAliWText.setPosition(_window_width - 155, 120);
 
 	sf::Text dCohWText("Cohesion Weight: " + to_string(flock.getBoid(0).getCohW()), font);
-	dCohWText.setColor(sf::Color::White);
+	dCohWText.setFillColor(sf::Color::White);
 	dCohWText.setCharacterSize(12);
 	dCohWText.setPosition(_window_width - 148, 132);
 
 
-	// Clock added to calculate frame rate, may cause a small amount of slowdown?
+	// Clock added to calculate frame rate
 	sf::Clock clock;
 
 	while (_window.isOpen()) {
