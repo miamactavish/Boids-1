@@ -49,36 +49,38 @@ void Game::Run()
 	boidText.setCharacterSize(12);
 	boidText.setPosition(_window_width - 155, 12);
 	
-	sf::Text dSepText("Separation Amount: " + to_string(flock.getBoid(0).getDesSep()), font);
+	// Extra debug messages... you may want to add the methods getDesSep(), etc. and uncomment these lines! 
+	
+	sf::Text dSepText;// ("Separation Amount: " + to_string(flock.getBoid(0).getDesSep()), font);
 	dSepText.setFillColor(sf::Color::White);
 	dSepText.setCharacterSize(12);
 	dSepText.setPosition(_window_width - 162, 60);
 
-	sf::Text dAliText("Alignment Amount: " + to_string(flock.getBoid(0).getDesAli()), font);
+	sf::Text dAliText;// ("Alignment Amount: " + to_string(flock.getBoid(0).getDesAli()), font);
 	dAliText.setFillColor(sf::Color::White);
 	dAliText.setCharacterSize(12);
 	dAliText.setPosition(_window_width - 155, 72);
 
-	sf::Text dCohText("Cohesion Amount: " + to_string(flock.getBoid(0).getDesCoh()), font);
+	sf::Text dCohText;// ("Cohesion Amount: " + to_string(flock.getBoid(0).getDesCoh()), font);
 	dCohText.setFillColor(sf::Color::White);
 	dCohText.setCharacterSize(12);
 	dCohText.setPosition(_window_width - 148, 84);
 
-	sf::Text dSepWText("Separation Weight: " + to_string(flock.getBoid(0).getSepW()), font);
+	sf::Text dSepWText;// ("Separation Weight: " + to_string(flock.getBoid(0).getSepW()), font);
 	dSepWText.setFillColor(sf::Color::White);
 	dSepWText.setCharacterSize(12);
 	dSepWText.setPosition(_window_width - 162, 108);
 
-	sf::Text dAliWText("Alignment Weight: " + to_string(flock.getBoid(0).getAliW()), font);
+	sf::Text dAliWText;// ("Alignment Weight: " + to_string(flock.getBoid(0).getAliW()), font);
 	dAliWText.setFillColor(sf::Color::White);
 	dAliWText.setCharacterSize(12);
 	dAliWText.setPosition(_window_width - 155, 120);
 
-	sf::Text dCohWText("Cohesion Weight: " + to_string(flock.getBoid(0).getCohW()), font);
+	sf::Text dCohWText;// ("Cohesion Weight: " + to_string(flock.getBoid(0).getCohW()), font);
 	dCohWText.setFillColor(sf::Color::White);
 	dCohWText.setCharacterSize(12);
 	dCohWText.setPosition(_window_width - 148, 132);
-
+	
 
 	// Clock added to calculate frame rate
 	sf::Clock clock;
@@ -107,86 +109,6 @@ void Game::HandleInput()
 			event.key.code == sf::Keyboard::X))
 		{
 			_window.close();
-		}
-
-		// Event to create new "prey" boids
-		if (event.type == sf::Event::KeyPressed &&
-			event.key.code == sf::Keyboard::Space) {
-			createBoid(rand() % _window_width, rand() % _window_height, sf::Color::Green, sf::Color::Blue);
-		}
-
-
-		//Events for modifying the values in Boids, possibly can be refactored?
-		if (event.type == sf::Event::KeyPressed &&
-			event.key.code == sf::Keyboard::Q)
-		{
-			flock.addDesSep();
-		}
-
-		if (event.type == sf::Event::KeyPressed &&
-			event.key.code == sf::Keyboard::A)
-		{
-			flock.subDesSep();
-		}
-
-		if (event.type == sf::Event::KeyPressed &&
-			event.key.code == sf::Keyboard::W)
-		{
-			flock.addDesAli();
-		}
-
-		if (event.type == sf::Event::KeyPressed &&
-			event.key.code == sf::Keyboard::S)
-		{
-			flock.subDesAli();
-		}
-
-		if (event.type == sf::Event::KeyPressed &&
-			event.key.code == sf::Keyboard::E)
-		{
-			flock.addDesCoh();
-		}
-
-		if (event.type == sf::Event::KeyPressed &&
-			event.key.code == sf::Keyboard::D)
-		{
-			flock.subDesCoh();
-		}
-
-		if (event.type == sf::Event::KeyPressed &&
-			event.key.code == sf::Keyboard::I)
-		{
-			flock.addSepW();
-		}
-
-		if (event.type == sf::Event::KeyPressed &&
-			event.key.code == sf::Keyboard::J)
-		{
-			flock.subSepW();
-		}
-
-		if (event.type == sf::Event::KeyPressed &&
-			event.key.code == sf::Keyboard::O)
-		{
-			flock.addAliW();
-		}
-
-		if (event.type == sf::Event::KeyPressed &&
-			event.key.code == sf::Keyboard::K)
-		{
-			flock.subAliW();
-		}
-
-		if (event.type == sf::Event::KeyPressed &&
-			event.key.code == sf::Keyboard::P)
-		{
-			flock.addCohW();
-		}
-
-		if (event.type == sf::Event::KeyPressed &&
-			event.key.code == sf::Keyboard::L)
-		{
-			flock.subCohW();
 		}
 
 		if (event.type == sf::Event::KeyPressed &&
@@ -244,6 +166,7 @@ void Game::Render(sf::Text fpsText, float fps, sf::Text boidText,
 	boidText.setString("Total Boid Count: " + to_string(flock.getSize()));
 	_window.draw(boidText);
 
+	/*
 	dSepText.setString("Separation Amount: " + to_string(int(flock.getBoid(0).getDesSep() + 0.5)));
 	_window.draw(dSepText);
 
@@ -261,6 +184,7 @@ void Game::Render(sf::Text fpsText, float fps, sf::Text boidText,
 
 	dCohWText.setString("Cohesion Weight: " + to_string(flock.getBoid(0).getCohW()));
 	_window.draw(dCohWText);
+	*/
 
 	// Draws all of the Boids out, and applies functions that are needed to update.
 	for (int i = 0; i < shapes.size(); i++) {
@@ -285,20 +209,6 @@ void Game::Render(sf::Text fpsText, float fps, sf::Text boidText,
 		// Calculates the angle where the velocity is pointing so that the triangle turns towards it.
 		float theta = flock.getBoid(i).getAngle(flock.getBoid(i).velocity);
 		shapes[i].setRotation(theta);
-
-		// Prevent boids from moving off the screen through wrapping
-		// If boid exits right boundary
-		if (shapes[i].getPosition().x > _window_width)
-			shapes[i].setPosition(shapes[i].getPosition().x - _window_width, shapes[i].getPosition().y);
-		// If boid exits bottom boundary
-		if (shapes[i].getPosition().y > _window_height)
-			shapes[i].setPosition(shapes[i].getPosition().x, shapes[i].getPosition().y - _window_height);
-		// If boid exits left boundary
-		if (shapes[i].getPosition().x < 0)
-			shapes[i].setPosition(shapes[i].getPosition().x + _window_width, shapes[i].getPosition().y);
-		// If boid exits top boundary
-		if (shapes[i].getPosition().y < 0)
-			shapes[i].setPosition(shapes[i].getPosition().x, shapes[i].getPosition().y + _window_height);
 	}
 
 	// Applies the three rules to each boid in the flock and changes them accordingly.
