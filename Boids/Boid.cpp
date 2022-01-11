@@ -46,99 +46,6 @@ void Boid::run(vector <Boid> v)
 	Pvector separation = getSeparation(v);
 	Pvector cohesion = getCohesion(v);
 
-	alignment.mulScalar(0.3);
-	cohesion.mulScalar(0.3);
-	separation.mulScalar(0.4);
-
-
-	acceleration = Pvector(0.0, 0.0);
-	acceleration.addVector(alignment);
-	acceleration.addVector(cohesion);
-	acceleration.addVector(separation);
-
-	// Either leave this method call here or update it to improve it - this is 
-	// what prevents boids from moving out of bounds of the simulation
-	borders();
-
-	// The results of these method calls should be added to the 'acceleration' vector, which is used to
-	// change the boid's velocity and position in the update() method.
-	update();
-}
-
-Pvector Boid::getAlignment(vector<Boid> flock) {
-
-	Pvector sum = Pvector(0, 0);
-	// Get the average heading of each Boid in the flock
-	for (int i = 0; i < flock.size(); i++) {
-
-		float distance = location.distance(flock[i].location);
-		if (distance > alignmentRad || distance <= 0) {
-			continue;
-		}
-
-		Pvector cur = flock[i].velocity;
-		sum.addVector(cur);
-	}
-
-	sum.divScalar(flock.size());
-
-	// Move this boid towards that average heading
-	sum.subVector(velocity);
-	sum.normalize();
-
-	return sum;
-}
-
-
-Pvector Boid::getSeparation(vector<Boid> flock) {
-	
-	Pvector sum = Pvector(0.0, 0.0);
-
-	for (int i = 0; i < flock.size(); i++) 
-	{ 
-		float distance = location.distance(flock[i].location);
-		if (distance > separationRad || distance <= 0) {
-			continue;
-		}
-		
-		Pvector diff;
-		diff = diff.subTwoVector(location, flock[i].location);
-		diff.normalize();
-
-		diff.divScalar(distance);
-		sum.addVector(diff);
-	}
-	sum.divScalar(flock.size());
-	
-	sum.normalize();
-	
-	return sum;
-}
-
-
-Pvector Boid::getCohesion(vector<Boid> flock) {
-	Pvector sum = Pvector(0, 0);
-	// Get the average heading of each Boid in the flock
-	for (int i = 0; i < flock.size(); i++) 
-	{
-		float distance = location.distance(flock[i].location);
-		if (distance > cohesionRad || distance <= 0) {
-			continue;
-		}
-
-		Pvector cur = flock[i].location;
-		sum.addVector(cur);
-	}
-	sum.divScalar(flock.size());
-
-	// Move this boid towards that average heading
-	sum.subVector(location);
-
-
-	Pvector alignment = getAlignment(v);
-	Pvector separation = getSeparation(v);
-	Pvector cohesion = getCohesion(v);
-
 	alignment.mulScalar(alignmentInf);
 	cohesion.mulScalar(cohesionInf);
 	separation.mulScalar(separationInf);
@@ -158,6 +65,7 @@ Pvector Boid::getCohesion(vector<Boid> flock) {
 	update();
 }
 
+
 Pvector Boid::getAlignment(vector<Boid> flock) {
 
 	Pvector sum = Pvector(0, 0);
@@ -236,7 +144,6 @@ Pvector Boid::getCohesion(vector<Boid> flock) {
 	return sum;
 }
 
->>>>>>> Stashed changes
 // Checks if boids go out of the window and if so, flips their velocity.
 void Boid::borders()
 {
