@@ -18,6 +18,7 @@ void Flock::flocking()
 {
 	for (int i = 0; i < flock.size(); i++)
 	{
+<<<<<<< Updated upstream
 		//Only checks in a certain range instead of checking through the whole flock in an attempt to reduce time complexity
 		for (int j = 0; j < flock.size(); j++) 
 		{
@@ -26,7 +27,12 @@ void Flock::flocking()
 				flock[i].run(flock);
 			}
 		}
+=======
+		flock[i].run(flock);
+>>>>>>> Stashed changes
 	}
+
+	std::cout << "Acceleration: " << flock[0].acceleration.magnitude() << " Velocity: " << flock[0].velocity.magnitude() << endl;
 }
 
 int Flock::flockCount()
