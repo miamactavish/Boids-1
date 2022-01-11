@@ -20,6 +20,8 @@ public:
 	
 	// Mutator Functions
 	void addBoid(Boid b);
+
+	// flocking() gets called every frame to update the simulation
 	void flocking();
 
 	// For accessing & modifying values in Game.cpp

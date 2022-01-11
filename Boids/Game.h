@@ -18,7 +18,7 @@ private:
 	Flock flock;
 	float boidsSize;
 	vector<sf::CircleShape> shapes;
-	//vector<sf::CircleShape> FOVs; // FOV that a boid would check
+	vector<sf::CircleShape> FOVs; // FOV that a boid would check
 
 	// Not a very efficient solution to pass the sf::Text objects through to the render function but it's
 	// a quick way to do it. Needs fix.

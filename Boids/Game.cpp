@@ -25,6 +25,7 @@ Game::Game()
 	this->_window_height = 768;
 	this->_window_width = 1204;
 	this->_window.create(sf::VideoMode(_window_width, _window_height), "Boids");
+	this->_window.setFramerateLimit(60);
 	printInstructions();
 }
 
@@ -133,17 +134,17 @@ void Game::createBoid(float x, float y, sf::Color fillColor, sf::Color outlineCo
 	shape.setOutlineColor(outlineColor);
 	shape.setOutlineThickness(.5);
 
-	/* FOV would show the radius that the boid would check to apply flocking
+	// FOV would show the radius that the boid would check to apply flocking
 
-	if (predStatus)
-	{
-		sf::CircleShape FOV(20, 30);
+	//if (predStatus)
+	//{
+		sf::CircleShape FOV(20);
 		FOV.setOutlineColor(sf::Color::White);
-		FOV.setOutlineThickness(.25);
+		FOV.setOutlineThickness(1);
 		FOV.setFillColor(sf::Color::Transparent);
 		FOVs.push_back(FOV);
-	}
-	*/
+	//}
+	
 	
 
 	flock.addBoid(b);
@@ -190,14 +191,14 @@ void Game::Render(sf::Text fpsText, float fps, sf::Text boidText,
 	for (int i = 0; i < shapes.size(); i++) {
 		_window.draw(shapes[i]);
 
-		/*Drawing and updating of the boids FOV
-		if (flock.getBoid(i).predatorStatus())
-		{
-			window.draw(FOVs[i]);
+		// Drawing and updating of the boids FOV
+		//if (flock.getBoid(i).predatorStatus())
+		//{
+			//_window.draw(FOVs[i]);
 			FOVs[i].setPosition(flock.getBoid(i).location.x, flock.getBoid(i).location.y);
-			FOVs[i].move(-20, -12);
-		}
-		*/
+			FOVs[i].move(-25, -25);
+		//}
+		
 
 
 		//cout << "Boid "<< i <<" Coordinates: (" << shapes[i].getPosition().x << ", " << shapes[i].getPosition().y << ")" << endl;
@@ -221,20 +222,6 @@ void Game::printInstructions()
 {
 	cout << string(100, '\n');
 	cout << "--------------Instructions--------------" << endl;
-	cout << "Press 'Q' to increase Separation Amount" << endl;
-	cout << "Press 'A' to decrease Separation Amount" << endl;
-	cout << "Press 'W' to increase Alignment Amount" << endl;
-	cout << "Press 'S' to decrease Alignment Amount" << endl;
-	cout << "Press 'E' to increase Cohesion Amount" << endl;
-	cout << "Press 'D' to decrease Cohesion Amount" << endl;
-	cout << "Press 'I' to increase Separation Weight" << endl;
-	cout << "Press 'J' to decrease Separation Weight" << endl;
-	cout << "Press 'O' to increase Alignment Weight" << endl;
-	cout << "Press 'K' to decrease Alignment Weight" << endl;
-	cout << "Press 'P' to increase Alignment Weight" << endl;
-	cout << "Press 'L' to decrease Alignment Weight" << endl;
-	cout << "Press 'Space' to add a prey Boid in a random spot" << endl;
-	cout << "Left Click to add a predator Boid where you clicked" << endl;
 	cout << "Press 'F5' to restart the simulation" << endl;
 	cout << "Press 'Esc', 'Backspace', or 'X' to Quit" << endl;
 }

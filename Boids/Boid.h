@@ -1,6 +1,7 @@
 #include "Pvector.h"
 #include <vector>
 
+// These two lines work the same way as #pragma once
 #ifndef BOID_H_
 #define BOID_H_
 
@@ -10,15 +11,16 @@ class Boid {
 public:
 	Pvector location;
 	Pvector velocity;
+	Pvector acceleration;
 
 	Boid(float x, float y);
 
 	void run(vector <Boid> v);
+
 	void update();
 	void borders();
 	float getAngle(Pvector v) const;
-<<<<<<< Updated upstream
-=======
+
 
 private:
 
@@ -45,7 +47,7 @@ private:
 	Pvector getAlignment(vector<Boid> v);
 	// Cohesion
 	Pvector getCohesion(vector<Boid> v);
->>>>>>> Stashed changes
+
 };
 
 #endif
