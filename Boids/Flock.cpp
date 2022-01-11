@@ -19,13 +19,16 @@ void Flock::flocking()
 	for (int i = 0; i < flock.size(); i++)
 	{
 		//Only checks in a certain range instead of checking through the whole flock in an attempt to reduce time complexity
-		for (int j = 0; j < flock.size(); j++) 
-		{
-			if (flock[i].location.distance(flock[j].location) <= abs(20)) // Not sure if distance is 1:1 with SFML window size or if it is even working
-			{
+		//for (int j = 0; j < flock.size(); j++) 
+		//{
+			//if (flock[i].location.distance(flock[j].location) <= abs(20)) // Not sure if distance is 1:1 with SFML window size or if it is even working
+			//{
 				flock[i].run(flock);
-			}
-		}
+				if (i == 0) {
+					std::cout << flock[i].acceleration.magnitude() << std::endl;
+				}
+			//}
+		//}
 	}
 }
 

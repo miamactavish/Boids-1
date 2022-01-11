@@ -14,18 +14,28 @@ const int window_width = 1204;
 
 Boid::Boid(float x, float y)
 {
+	acceleration = Pvector(0, 0);
+
 	// Give Boids a random initial velocity
 	velocity = Pvector(rand() % 10 / 10.0, rand() % 10 / 10.0);
 
+	velocity.setMagnitude(15.0);
+
 	// places boid in a random location in the window
 	location = Pvector((rand() % window_width), (rand() % window_height));
-
 }
 
 // Modifies velocity, location, and resets acceleration with values that
 // are given by the three laws.
 void Boid::update()
 {
+	if (acceleration.magnitude() > 0.2) {
+		acceleration.setMagnitude(0.2);
+	}
+	velocity.addVector(acceleration);
+
+	//velocity.setMagnitude(2.0);
+
 	location.addVector(velocity);
 }
 
@@ -34,28 +44,119 @@ void Boid::run(vector <Boid> v)
 {
 	// YOUR CODE HERE
 	// Add method calls to apply the three rules of Boids simulations. 
-	// 
-	// 
-	// The results of these method calls should be added to the 'acceleration' vector, which is used to
-	// change the boid's velocity and position in the update() method.
-	update();
+	Pvector alignment = getAlignment(v);
+	Pvector separation = getSeparation(v);
+	Pvector cohesion = getCohesion(v);
+
+	alignment.mulScalar(0.3);
+	cohesion.mulScalar(0.3);
+	separation.mulScalar(0.4);
+
+
+	acceleration = Pvector(0.0, 0.0);
+	acceleration.addVector(alignment);
+	acceleration.addVector(cohesion);
+	acceleration.addVector(separation);
 
 	// Either leave this method call here or update it to improve it - this is 
 	// what prevents boids from moving out of bounds of the simulation
 	borders();
+
+	// The results of these method calls should be added to the 'acceleration' vector, which is used to
+	// change the boid's velocity and position in the update() method.
+	update();
 }
 
+Pvector Boid::getAlignment(vector<Boid> flock) {
+
+	Pvector sum = Pvector(0, 0);
+	// Get the average heading of each Boid in the flock
+	for (int i = 0; i < flock.size(); i++) {
+
+		float distance = location.distance(flock[i].location);
+		if (distance > alignmentRad || distance <= 0) {
+			continue;
+		}
+
+		Pvector cur = flock[i].velocity;
+		sum.addVector(cur);
+	}
+
+	sum.divScalar(flock.size());
+
+	// Move this boid towards that average heading
+	sum.subVector(velocity);
+	sum.normalize();
+
+	return sum;
+}
+
+
+Pvector Boid::getSeparation(vector<Boid> flock) {
+	
+	Pvector sum = Pvector(0.0, 0.0);
+
+	for (int i = 0; i < flock.size(); i++) 
+	{ 
+		float distance = location.distance(flock[i].location);
+		if (distance > separationRad || distance <= 0) {
+			continue;
+		}
+		
+		Pvector diff;
+		diff = diff.subTwoVector(location, flock[i].location);
+		diff.normalize();
+
+		diff.divScalar(distance);
+		sum.addVector(diff);
+	}
+	sum.divScalar(flock.size());
+	
+	sum.normalize();
+	
+	return sum;
+}
+
+
+Pvector Boid::getCohesion(vector<Boid> flock) {
+	Pvector sum = Pvector(0, 0);
+	// Get the average heading of each Boid in the flock
+	for (int i = 0; i < flock.size(); i++) 
+	{
+		float distance = location.distance(flock[i].location);
+		if (distance > cohesionRad || distance <= 0) {
+			continue;
+		}
+
+		Pvector cur = flock[i].location;
+		sum.addVector(cur);
+	}
+	sum.divScalar(flock.size());
+
+	// Move this boid towards that average heading
+	sum.subVector(location);
+
+	sum.normalize();
+	return sum;
+}
 
 // Checks if boids go out of the window and if so, flips their velocity.
 void Boid::borders()
 {
-	if (location.x < 0 || location.x > window_width) {
+	if (location.x < 0 && velocity.x < 0) {
 		velocity.x = -velocity.x;
 	}
-	if (location.y < 0 || location.y > window_height) {
+	if (location.x > window_width && velocity.x > 0) {
+		velocity.x = -velocity.x;
+	}
+	if (location.y < 0 && velocity.y < 0) {
+		velocity.y = -velocity.y;
+	}
+	if (location.y > window_height && velocity.y > 0) {
 		velocity.y = -velocity.y;
 	}
 }
+
 
 // You can leave this code alone - it's used to get the direction a boid is facing, so the triangle representing it on the screen
 // can be rotated in the proper direction. It's called in Game.cpp.
