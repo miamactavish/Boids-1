@@ -35,9 +35,9 @@ private:
 	float cohesionInf = 0.3;
 
 	// Radius that we look in for each rule
-	float separationRad = 100.0;
-	float alignmentRad = 250.0;
-	float cohesionRad = 250.0;
+	float separationRad = 50.0;
+	float alignmentRad = 400.0;
+	float cohesionRad = 400.0;
 
 	// Three rules for Boids simulations
 

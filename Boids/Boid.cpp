@@ -19,7 +19,7 @@ Boid::Boid(float x, float y)
 	// Give Boids a random initial velocity
 	velocity = Pvector(rand() % 10 / 10.0, rand() % 10 / 10.0);
 
-	velocity.setMagnitude(3.0);
+	velocity.setMagnitude(4.0);
 
 	// places boid in a random location in the window
 	location = Pvector((rand() % window_width), (rand() % window_height));
@@ -29,6 +29,7 @@ Boid::Boid(float x, float y)
 // are given by the three laws.
 void Boid::update()
 {
+	acceleration.mulScalar(0.35);
 	//acceleration.limit(maxAcceleration);
 
 	velocity.addVector(acceleration);
@@ -69,6 +70,7 @@ void Boid::run(vector <Boid> v)
 Pvector Boid::getAlignment(vector<Boid> flock) {
 
 	Pvector sum = Pvector(0, 0);
+	int count = 0;
 	// Get the average heading of each Boid in the flock
 	for (int i = 0; i < flock.size(); i++) {
 
@@ -79,15 +81,18 @@ Pvector Boid::getAlignment(vector<Boid> flock) {
 		
 		Pvector cur = flock[i].velocity;
 		sum.addVector(cur);
+		count++;
 	}
 
-	sum.divScalar(flock.size());
+	if (count > 0) {
+		sum.divScalar(count);
+		sum.limit(maxVelocity);
+		// Move this boid towards that average heading
+		sum.subVector(velocity);
 
-	// Move this boid towards that average heading
-	sum.subVector(velocity);
-	
-	//sum.normalize();
-	sum.limit(maxAcceleration);
+		//sum.normalize();
+		sum.limit(maxAcceleration);
+	}
 
 	return sum;
 }
@@ -96,6 +101,7 @@ Pvector Boid::getAlignment(vector<Boid> flock) {
 Pvector Boid::getSeparation(vector<Boid> flock) {
 	
 	Pvector sum = Pvector(0.0, 0.0);
+	int count = 0;
 
 	for (int i = 0; i < flock.size(); i++) 
 	{ 
@@ -110,11 +116,18 @@ Pvector Boid::getSeparation(vector<Boid> flock) {
 
 		diff.divScalar(distance);
 		sum.addVector(diff);
+		count++;
 	}
-	sum.divScalar(flock.size());
-	
-	//sum.normalize();
-	sum.limit(maxAcceleration);
+
+	if (count > 0) {
+		sum.divScalar(count);
+		//sum.limit(maxVelocity);
+		sum.normalize();
+		sum.mulScalar(maxVelocity);
+		sum.subVector(velocity);
+
+		sum.limit(maxAcceleration);
+	}
 	
 	return sum;
 }
@@ -122,6 +135,7 @@ Pvector Boid::getSeparation(vector<Boid> flock) {
 
 Pvector Boid::getCohesion(vector<Boid> flock) {
 	Pvector sum = Pvector(0, 0);
+	int count = 0;
 	// Get the average heading of each Boid in the flock
 	for (int i = 0; i < flock.size(); i++) 
 	{
@@ -132,15 +146,21 @@ Pvector Boid::getCohesion(vector<Boid> flock) {
 
 		Pvector cur = flock[i].location;
 		sum.addVector(cur);
+		count++;
 	}
-	sum.divScalar(flock.size());
+	if (count > 0) {
+		sum.divScalar(count);
 
-	// Move this boid towards that average heading
-	sum.subVector(location);
-
-	//sum.normalize();
-	sum.limit(maxAcceleration);
-
+		// Move this boid towards that average heading
+		sum.subVector(location);
+		//sum.limit(maxVelocity);
+		sum.normalize();
+		sum.mulScalar(maxVelocity);
+		sum.subVector(velocity);
+		//sum.normalize();
+		sum.limit(maxAcceleration);
+	}
+	
 	return sum;
 }
 
