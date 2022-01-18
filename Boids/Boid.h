@@ -18,7 +18,7 @@ public:
 	void run(vector <Boid> v);
 
 	void update();
-	void borders();
+	Pvector borders();
 	float getAngle(Pvector v) const;
 
 	// Constants for simulation 
@@ -37,6 +37,9 @@ private:
 	float separationRad = 50.0;
 	float alignmentRad = 300.0;
 	float cohesionRad = 300.0;
+
+	// Radius for checking for borders
+	float borderRad = 50.0;
 
 	// Three rules for Boids simulations
 
