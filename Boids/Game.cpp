@@ -22,7 +22,7 @@ If you change something in this file and things end up breaking, redownload the 
 Game::Game()
 {
 	//this->boidsSize = rand() % 10 - 3;
-	this->_window_height = 768;
+	this->_window_height = 1000;
 	this->_window_width = 1204;
 	this->_window.create(sf::VideoMode(_window_width, _window_height), "Boids");
 	this->_window.setFramerateLimit(60);
@@ -119,6 +119,21 @@ void Game::HandleInput()
 			Game temp;;
 			temp.Run();
 		}
+
+		// Check for key input for the tuning variables
+
+		// Increase acceleration
+		if (event.type == sf::Event::KeyPressed &&
+			event.key.code == sf::Keyboard::Q) 
+		{
+			flock.modifyAcceleration(0.1);
+		}
+		if (event.type == sf::Event::KeyPressed &&
+			event.key.code == sf::Keyboard::W) 
+		{
+			flock.modifyAcceleration(-0.1);
+		}
+
 	}
 }
 

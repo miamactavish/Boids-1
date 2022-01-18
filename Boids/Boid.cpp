@@ -5,7 +5,7 @@
 #include "SFML/Window.hpp"
 
 // Global Variables for borders()
-const int window_height = 768;
+const int window_height = 1000;
 const int window_width = 1204;
 
 // =============================================== //
@@ -19,7 +19,7 @@ Boid::Boid(float x, float y)
 	// Give Boids a random initial velocity
 	velocity = Pvector(rand() % 10 / 10.0, rand() % 10 / 10.0);
 
-	velocity.setMagnitude(3.0);
+	velocity.setMagnitude(maxVelocity);
 
 	// places boid in a random location in the window
 	location = Pvector((rand() % window_width), (rand() % window_height));
@@ -69,6 +69,8 @@ void Boid::run(vector <Boid> v)
 Pvector Boid::getAlignment(vector<Boid> flock) {
 
 	Pvector sum = Pvector(0, 0);
+	int count = 0;
+
 	// Get the average heading of each Boid in the flock
 	for (int i = 0; i < flock.size(); i++) {
 
@@ -79,15 +81,23 @@ Pvector Boid::getAlignment(vector<Boid> flock) {
 		
 		Pvector cur = flock[i].velocity;
 		sum.addVector(cur);
+
+		count++;
 	}
 
-	sum.divScalar(flock.size());
+	if (count > 0) {
+		// Get the average velocity of surrounding Boids
+		sum.divScalar(count);
 
-	// Move this boid towards that average heading
-	sum.subVector(velocity);
-	
-	//sum.normalize();
-	sum.limit(maxAcceleration);
+		// Clamp to maximum velocity
+		sum.setMagnitude(maxVelocity);
+
+		// Move this boid towards that average heading
+		sum.subVector(velocity);
+
+		// Cap the acceleration
+		sum.limit(maxAcceleration);
+	}
 
 	return sum;
 }
@@ -96,6 +106,8 @@ Pvector Boid::getAlignment(vector<Boid> flock) {
 Pvector Boid::getSeparation(vector<Boid> flock) {
 	
 	Pvector sum = Pvector(0.0, 0.0);
+
+	int count = 0;
 
 	for (int i = 0; i < flock.size(); i++) 
 	{ 
@@ -110,37 +122,66 @@ Pvector Boid::getSeparation(vector<Boid> flock) {
 
 		diff.divScalar(distance);
 		sum.addVector(diff);
+
+		count++;
 	}
-	sum.divScalar(flock.size());
-	
-	//sum.normalize();
-	sum.limit(maxAcceleration);
+
+	if (count > 0) {
+		// Get the average separation vector
+		sum.divScalar(count);
+
+		// Clamp the desired velocity by our maximum acceleration
+		sum.setMagnitude(maxVelocity);
+
+		// Get the vector pointing from our current velocity to our desired velocity
+		sum.subVector(velocity);
+
+		// Cap the acceleration
+		sum.limit(maxAcceleration);
+	}
 	
 	return sum;
 }
 
 
-Pvector Boid::getCohesion(vector<Boid> flock) {
+Pvector Boid::getCohesion(vector<Boid> flock) 
+{
 	Pvector sum = Pvector(0, 0);
 	// Get the average heading of each Boid in the flock
+
+	int count = 0;
+
 	for (int i = 0; i < flock.size(); i++) 
 	{
 		float distance = location.distance(flock[i].location);
+
+
 		if (distance > cohesionRad || distance <= 0) {
 			continue;
 		}
 
 		Pvector cur = flock[i].location;
 		sum.addVector(cur);
+		
+		count++;
 	}
-	sum.divScalar(flock.size());
 
-	// Move this boid towards that average heading
-	sum.subVector(location);
+	if (count > 0) {
+		// Sum contains the average position of the surrounding boids
+		sum.divScalar(count);
 
-	//sum.normalize();
-	sum.limit(maxAcceleration);
+		// Get the vector pointing from the current boid to the average location of surrounding boids
+		sum.subVector(location);
 
+		// Clamp this vector to our maximum velocity
+		sum.setMagnitude(maxVelocity);
+
+		// Get the difference between the current velocity and the desired velocity
+		sum.subVector(velocity);
+
+		sum.limit(maxAcceleration);
+	}
+	
 	return sum;
 }
 

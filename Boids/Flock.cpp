@@ -28,10 +28,28 @@ void Flock::flocking()
 		}
 	}
 
-	std::cout << "Acceleration: " << flock[0].acceleration.magnitude() << " Velocity: " << flock[0].velocity.magnitude() << endl;
+	//std::cout << "Acceleration: " << flock[0].acceleration.magnitude() << " Velocity: " << flock[0].velocity.magnitude() << endl;
 }
 
 int Flock::flockCount()
 {
 	return flock.size();
+}
+
+void Flock::modifyAcceleration(float amount) {
+	for (int i = 0; i < flock.size(); i++)
+	{
+		flock[i].maxAcceleration = flock[i].maxAcceleration + amount;
+	}
+
+std:cout << "Maximum acceleration set to " << flock[0].maxAcceleration << std::endl;
+}
+
+void Flock::modifyVelocity(float amount) {
+	for (int i = 0; i < flock.size(); i++)
+	{
+		flock[i].maxVelocity = flock[i].maxVelocity + amount;
+	}
+
+std:cout << "Maximum velocity set to " << flock[0].maxVelocity << std::endl;
 }

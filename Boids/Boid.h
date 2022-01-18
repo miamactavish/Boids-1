@@ -21,12 +21,11 @@ public:
 	void borders();
 	float getAngle(Pvector v) const;
 
+	// Constants for simulation 
+	float maxAcceleration = 0.8;
+	float maxVelocity = 5.0;
 
 private:
-
-	// Constants for simulation 
-	float maxAcceleration = 0.6;
-	float maxVelocity = 4.0;
 
 	// How much each rule influences the total
 	// acceleration
@@ -35,9 +34,9 @@ private:
 	float cohesionInf = 0.3;
 
 	// Radius that we look in for each rule
-	float separationRad = 100.0;
-	float alignmentRad = 250.0;
-	float cohesionRad = 250.0;
+	float separationRad = 50.0;
+	float alignmentRad = 300.0;
+	float cohesionRad = 300.0;
 
 	// Three rules for Boids simulations
 
