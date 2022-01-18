@@ -29,7 +29,6 @@ Boid::Boid(float x, float y)
 // are given by the three laws.
 void Boid::update()
 {
-	acceleration.mulScalar(0.35);
 	//acceleration.limit(maxAcceleration);
 
 	velocity.addVector(acceleration);
@@ -59,7 +58,9 @@ void Boid::run(vector <Boid> v)
 
 	// Either leave this method call here or update it to improve it - this is 
 	// what prevents boids from moving out of bounds of the simulation
-	borders();
+	Pvector avoid = borders();
+
+	acceleration.addVector(avoid);
 
 	// The results of these method calls should be added to the 'acceleration' vector, which is used to
 	// change the boid's velocity and position in the update() method.
@@ -71,6 +72,7 @@ Pvector Boid::getAlignment(vector<Boid> flock) {
 
 	Pvector sum = Pvector(0, 0);
 	int count = 0;
+
 	// Get the average heading of each Boid in the flock
 	for (int i = 0; i < flock.size(); i++) {
 
@@ -81,6 +83,7 @@ Pvector Boid::getAlignment(vector<Boid> flock) {
 		
 		Pvector cur = flock[i].velocity;
 		sum.addVector(cur);
+
 		count++;
 	}
 
@@ -107,8 +110,6 @@ Pvector Boid::getSeparation(vector<Boid> flock) {
 	Pvector sum = Pvector(0.0, 0.0);
 	int count = 0;
 
-	int count = 0;
-
 	for (int i = 0; i < flock.size(); i++) 
 	{ 
 		float distance = location.distance(flock[i].location);
@@ -122,6 +123,7 @@ Pvector Boid::getSeparation(vector<Boid> flock) {
 
 		diff.divScalar(distance);
 		sum.addVector(diff);
+
 		count++;
 	}
 
@@ -146,7 +148,6 @@ Pvector Boid::getSeparation(vector<Boid> flock) {
 Pvector Boid::getCohesion(vector<Boid> flock) 
 {
 	Pvector sum = Pvector(0, 0);
-	int count = 0;
 	// Get the average heading of each Boid in the flock
 
 	int count = 0;
@@ -186,20 +187,65 @@ Pvector Boid::getCohesion(vector<Boid> flock)
 }
 
 // Checks if boids go out of the window and if so, flips their velocity.
-void Boid::borders()
+Pvector Boid::borders()
 {
-	if (location.x < 0 && velocity.x < 0) {
-		velocity.x = -velocity.x;
+	Pvector avoid(0.0, 0.0);
+
+	// Get distance from vertical walls
+	float leftWall = location.x;
+	float rightWall = window_width - location.x;
+
+	// Get distance from horizontal walls
+	float topWall = location.y;
+	float bottomWall = window_height - location.y;
+
+	if (leftWall < borderRad) {
+		Pvector right = Pvector(1.0, 0.0);
+		right.divScalar((leftWall/2));
+		avoid.addVector(right);
 	}
+	else if (rightWall < borderRad) {
+		Pvector left = Pvector(-1.0, 0.0);
+		left.divScalar((rightWall/2));
+		avoid.addVector(left);
+	}
+
+	if (topWall < borderRad) {
+		Pvector down = Pvector(0.0, 1.0);
+		down.divScalar((topWall/2));
+		avoid.addVector(down);
+	}
+	else if (bottomWall < borderRad) {
+		Pvector up = Pvector(0.0, -1.0);
+		up.divScalar((bottomWall/2));
+		avoid.addVector(up);
+	}
+
+
+	// failsafe - flip velocity if a boid manages to touch the wall
 	if (location.x > window_width && velocity.x > 0) {
 		velocity.x = -velocity.x;
 	}
-	if (location.y < 0 && velocity.y < 0) {
-		velocity.y = -velocity.y;
+	if (location.x < 0 && velocity.x < 0) {
+		velocity.x = -velocity.x;
 	}
 	if (location.y > window_height && velocity.y > 0) {
 		velocity.y = -velocity.y;
 	}
+	if (location.y < 0 && velocity.y < 0) {
+		velocity.y = -velocity.y;
+	}
+
+	if (avoid.magnitude() > 0) {
+		avoid.setMagnitude(maxVelocity);
+
+		// Accelerate in the direction of the avoid vector
+		avoid.subVector(velocity);
+		avoid.limit(maxAcceleration);
+	}
+	
+
+	return avoid;
 }
 
 

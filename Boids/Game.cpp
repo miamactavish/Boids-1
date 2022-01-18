@@ -134,6 +134,17 @@ void Game::HandleInput()
 			flock.modifyAcceleration(-0.1);
 		}
 
+		// Modify velocity
+		if (event.type == sf::Event::KeyPressed &&
+			event.key.code == sf::Keyboard::A)
+		{
+			flock.modifyVelocity(0.1);
+		}
+		if (event.type == sf::Event::KeyPressed &&
+			event.key.code == sf::Keyboard::S)
+		{
+			flock.modifyVelocity(-0.1);
+		}
 	}
 }
 
