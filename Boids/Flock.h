@@ -26,5 +26,8 @@ public:
 
 	// For accessing & modifying values in Game.cpp
 	int flockCount();
+
+	void modifyAcceleration(float amount);
+	void modifyVelocity(float amount);
 };
 
