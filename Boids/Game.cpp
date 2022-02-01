@@ -145,6 +145,22 @@ void Game::HandleInput()
 		{
 			flock.modifyVelocity(-0.1);
 		}
+
+		// Check for mouse clicks, to add obstacles to the simulation
+		if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+			std::cout << "X: " << event.mouseButton.x << ", Y: " << event.mouseButton.y << std::endl;
+
+			// Draw obstacle to the screen 
+			sf::CircleShape shape(7);
+			shape.setPosition(event.mouseButton.x, event.mouseButton.y);
+			shape.setFillColor(sf::Color::White);
+
+			obstacles.push_back(shape);
+			_window.draw(obstacles[obstacles.size() - 1]);
+
+			// Store this obstacle in the flock class
+			flock.addObstacle(event.mouseButton.x, event.mouseButton.y);
+		}
 	}
 }
 
@@ -218,17 +234,8 @@ void Game::Render(sf::Text fpsText, float fps, sf::Text boidText,
 		_window.draw(shapes[i]);
 
 		// Drawing and updating of the boids FOV
-		//if (flock.getBoid(i).predatorStatus())
-		//{
-			//_window.draw(FOVs[i]);
-			FOVs[i].setPosition(flock.getBoid(i).location.x, flock.getBoid(i).location.y);
-			FOVs[i].move(-25, -25);
-		//}
-		
-
-
-		//cout << "Boid "<< i <<" Coordinates: (" << shapes[i].getPosition().x << ", " << shapes[i].getPosition().y << ")" << endl;
-		//cout << "Boid Code " << i << " Location: (" << flock.getBoid(i).location.x << ", " << flock.getBoid(i).location.y << ")" << endl;
+		FOVs[i].setPosition(flock.getBoid(i).location.x, flock.getBoid(i).location.y);
+		FOVs[i].move(-25, -25);
 
 		// Matches up the location of the shape to the boid
 		shapes[i].setPosition(flock.getBoid(i).location.x, flock.getBoid(i).location.y);
@@ -236,6 +243,11 @@ void Game::Render(sf::Text fpsText, float fps, sf::Text boidText,
 		// Calculates the angle where the velocity is pointing so that the triangle turns towards it.
 		float theta = flock.getBoid(i).getAngle(flock.getBoid(i).velocity);
 		shapes[i].setRotation(theta);
+	}
+
+	// Draws all of the Boids out, and applies functions that are needed to update.
+	for (int i = 0; i < obstacles.size(); i++) {
+		_window.draw(obstacles[i]);
 	}
 
 	// Applies the three rules to each boid in the flock and changes them accordingly.

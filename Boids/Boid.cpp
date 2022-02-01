@@ -60,6 +60,8 @@ void Boid::run(vector <Boid> v)
 	// what prevents boids from moving out of bounds of the simulation
 	Pvector avoid = borders();
 
+	avoid.mulScalar(0.6);
+
 	acceleration.addVector(avoid);
 
 	// The results of these method calls should be added to the 'acceleration' vector, which is used to
@@ -201,23 +203,23 @@ Pvector Boid::borders()
 
 	if (leftWall < borderRad) {
 		Pvector right = Pvector(1.0, 0.0);
-		right.divScalar((leftWall/2));
+		right.divScalar(leftWall);
 		avoid.addVector(right);
 	}
 	else if (rightWall < borderRad) {
 		Pvector left = Pvector(-1.0, 0.0);
-		left.divScalar((rightWall/2));
+		left.divScalar(rightWall);
 		avoid.addVector(left);
 	}
 
 	if (topWall < borderRad) {
 		Pvector down = Pvector(0.0, 1.0);
-		down.divScalar((topWall/2));
+		down.divScalar(topWall);
 		avoid.addVector(down);
 	}
 	else if (bottomWall < borderRad) {
 		Pvector up = Pvector(0.0, -1.0);
-		up.divScalar((bottomWall/2));
+		up.divScalar(bottomWall);
 		avoid.addVector(up);
 	}
 

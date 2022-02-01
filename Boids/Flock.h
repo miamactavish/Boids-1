@@ -29,5 +29,9 @@ public:
 
 	void modifyAcceleration(float amount);
 	void modifyVelocity(float amount);
+
+	void addObstacle(int x, int y);
+
+	vector<Pvector> obstacles;
 };
 

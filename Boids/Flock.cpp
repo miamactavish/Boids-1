@@ -53,3 +53,10 @@ void Flock::modifyVelocity(float amount) {
 
 std:cout << "Maximum velocity set to " << flock[0].maxVelocity << std::endl;
 }
+
+void Flock::addObstacle(int x, int y) {
+	obstacles.push_back(Pvector(x, y));
+
+	// Pass in the vector of obstacles to each boid in each iteration of the flocking() function
+	// Add avoiding behavior for all obstacles 
+}
